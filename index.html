@@ -9,6 +9,8 @@
       .then(response => response.text())
       .then(data => {
         console.log("RESPONSE:", data);
+        document.body.innerHTML += `<pre>${data}</pre>`;
+      })
       .catch(error => console.error("Error:", error));
     </script>
   </body>
