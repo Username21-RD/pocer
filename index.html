@@ -13,6 +13,14 @@
         .then(data => {
           console.log("RESPONSE:", data);
           document.body.innerHTML += `<h2>Response from: ${targetUrl}</h2><pre>${escapeHtml(data)}</pre>`;
+
+          // Render iframe below the response
+          const iframe = document.createElement("iframe");
+          iframe.src = targetUrl;
+          iframe.width = "100%";
+          iframe.height = "800px";
+          iframe.style.border = "1px solid #ccc";
+          document.body.appendChild(iframe);
         })
         .catch(error => {
           console.error("Error:", error);
@@ -22,7 +30,6 @@
         document.body.innerHTML += `<p style="color:orange;">No URL entered.</p>`;
       }
 
-      // Helper function to escape HTML
       function escapeHtml(str) {
         return str
           .replace(/&/g, "&amp;")
