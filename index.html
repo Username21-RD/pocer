@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CORS Page Viewer</title>
+  <title>CORS Misconfig Tester</title>
 </head>
 <body>
-  <h2>Load CORS content from intigriti.ilias-solutions.com</h2>
-  <button onclick="loadPage()">Load Page</button>
-  <iframe id="corsFrame" width="100%" height="600px"></iframe>
+  <h2>CORS Vulnerability Tester</h2>
+
+  <label for="targetUrl">Target URL:</label><br>
+  <input type="text" id="targetUrl" size="80" placeholder="https://example.com/protected/resource"><br><br>
+  <button onclick="testCORS()">Test CORS</button>
+
+  <pre id="result" style="white-space: pre-wrap; margin-top: 20px;"></pre>
 
   <script>
-    function loadPage() {
-      fetch("https://intigriti.ilias-solutions.com/intigriti/assmgmt/", {
-        credentials: "include"
-      }).then(async r => {
-        const txt = await r.text();
-        console.log("Status:", r.status);
-        console.log("ACAO:", r.headers.get("access-control-allow-origin"));
-        console.log("ACAC:", r.headers.get("access-control-allow-credentials"));
-        console.log("Looks logged in?:", /logout|username|ng-app="assmgmt"/i.test(txt) && !/login/i.test(txt));
-        console.log(txt.slice(0, 500)); // peek
-      });
+    async function testCORS() {
+      const url = document.getElementById("targetUrl").value;
+      const output = document.getElementById("result");
+      output.textContent = "Testing...";
 
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include"
+        });
+
+        const headers = Object.fromEntries(response.headers.entries());
+        const bodyPreview = await response.text();
+
+        const result = {
+          "URL": url,
+          "Status": response.status,
+          "Access-Control-Allow-Origin": headers["access-control-allow-origin"] || "❌ Not present",
+          "Access-Control-Allow-Credentials": headers["access-control-allow-credentials"] || "❌ Not present",
+          "Cookies Sent?": document.cookie ? "✅ Might be sent (check SameSite)" : "❓ No local cookies found",
+          "Authenticated Content?": /logout|username|dashboard|ng-app/i.test(bodyPreview) && !/login/i.test(bodyPreview)
+            ? "✅ Possibly" : "❓ Probably not (unauthenticated)",
+          "Body Preview": bodyPreview.slice(0, 600) + (bodyPreview.length > 600 ? "..." : "")
+        };
+
+        output.textContent = JSON.stringify(result, null, 2);
+      } catch (err) {
+        output.textContent = "❌ Request failed:\n" + err;
+      }
     }
   </script>
 </body>
