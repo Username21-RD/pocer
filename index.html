@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CORS Misconfig Tester</title>
+  <title>CORS Misconfig Test from username21-rd.github.io</title>
 </head>
 <body>
-  <h2>CORS Vulnerability Tester</h2>
+  <h2>CORS Misconfiguration Test</h2>
 
   <label for="targetUrl">Target URL:</label><br>
-  <input type="text" id="targetUrl" size="80" placeholder="https://example.com/protected/resource"><br><br>
+  <input type="text" id="targetUrl" size="80" placeholder="https://example.com/resource"><br><br>
   <button onclick="testCORS()">Test CORS</button>
 
-  <pre id="result" style="white-space: pre-wrap; margin-top: 20px;"></pre>
+  <pre id="result" style="white-space: pre-wrap; margin-top: 20px; background: #f0f0f0; padding: 10px;"></pre>
 
   <script>
     async function testCORS() {
-      const url = document.getElementById("targetUrl").value;
+      const url = document.getElementById("targetUrl").value.trim();
       const output = document.getElementById("result");
-      output.textContent = "Testing...";
+      output.textContent = "Testing...\n";
 
       try {
         const response = await fetch(url, {
           method: "GET",
-          credentials: "include"
+          credentials: "include"  // this will send cookies if browser allows
         });
 
-        const headers = Object.fromEntries(response.headers.entries());
-        const bodyPreview = await response.text();
+        const headers = {};
+        response.headers.forEach((value, key) => headers[key.toLowerCase()] = value);
+
+        const html = await response.text();
 
         const result = {
-          "URL": url,
-          "Status": response.status,
+          "Target URL": url,
+          "Origin (your page)": location.origin,
+          "Response Status": response.status,
           "Access-Control-Allow-Origin": headers["access-control-allow-origin"] || "❌ Not present",
           "Access-Control-Allow-Credentials": headers["access-control-allow-credentials"] || "❌ Not present",
-          "Cookies Sent?": document.cookie ? "✅ Might be sent (check SameSite)" : "❓ No local cookies found",
-          "Authenticated Content?": /logout|username|dashboard|ng-app/i.test(bodyPreview) && !/login/i.test(bodyPreview)
-            ? "✅ Possibly" : "❓ Probably not (unauthenticated)",
-          "Body Preview": bodyPreview.slice(0, 600) + (bodyPreview.length > 600 ? "..." : "")
+          "Was authenticated?": /logout|user|dashboard|ng-app/i.test(html) && !/login/i.test(html)
+            ? "✅ Possibly"
+            : "❓ Probably not (unauthenticated)",
+          "Response Snippet": html.slice(0, 600) + (html.length > 600 ? "..." : "")
         };
 
         output.textContent = JSON.stringify(result, null, 2);
-      } catch (err) {
-        output.textContent = "❌ Request failed:\n" + err;
+      } catch (e) {
+        output.textContent = "❌ Request failed:\n" + e;
       }
     }
   </script>
